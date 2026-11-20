@@ -11,20 +11,18 @@ as a GitHub Release. A small script installs the newest release on a server.
 > supported PHP version (or upgrading the OS) remains the real fix.
 
 
-### What the workflow does
+### What this repository does
 
-- For each PHP version, finds Sury's newest source revision.
-- If a release `php<version>-r<revision>` already exists, it stops (unless
-  **force** is ticked).
+- Daily check for Sury's newest source revision for each of PHP versions (7.5 and 5.6).
+- If a release `php<version>-r<revision>` already exists, it stops.
 - Otherwise it builds. The build script refuses to build a source whose
-  changelog doesn't mention the required CVEs (default: `CVE-2026-109618` and
-  `CVE-2026-129496`). In that case the run ends with a notice, not a failure,
-  and tries again the next day.
+  changelog doesn't mention the required CVEs [default: `CVE-2026-109618` (PHP2Shell CVEs) and
+  `CVE-2026-129496` (phpAfterShell CVEs)].
 - On success it creates a release with one bundle
   (`php7.4-focal-r<rev>.tar.gz`, containing the `.deb` files, `SHA256SUMS` and
   `install-php-debs.sh`), its `.sha256` file and the full `build.log`.
 
-Manual runs can choose a single version, force a rebuild, or override the
+Repo maintainer can choose to run a single version, force a rebuild, or override the
 required CVE list.
 
 ## Installing on a server
@@ -44,7 +42,7 @@ sudo DOWNLOAD_ONLY=1 ./install-from-release.sh 7.4    # download + verify only
 sudo GITHUB_TOKEN=... ./install-from-release.sh 7.4   # private repository
 ```
 
-The installer:
+## What the installer does:
 
 1. verifies checksums;
 2. upgrades **only** the PHP packages already installed (separate extensions
@@ -55,14 +53,14 @@ The installer:
 6. asks before installing, keeps your edited config files, restarts
    `php<ver>-fpm` and tests the config.
 
-Rollback (the exact command is printed at the end of each install):
+### Rollback (the exact command is printed at the end of each install):
 
 ```bash
 sudo apt-get install --allow-downgrades /root/php7.4-backup-<date>/*.deb
 sudo systemctl restart php7.4-fpm
 ```
 
-## Building locally instead of in CI
+## (Alternative) Building locally and deploying to server
 
 ```bash
 ./build-php-focal.sh 7.4          # or 5.6
@@ -73,17 +71,3 @@ MIRROR=http://ubuntu.ethz.ch/ubuntu DOCKER_ARGS="--network host" ./build-php-foc
 Then copy `php7.4-focal-debs/` and `install-php-debs.sh` to the server and run
 `sudo ./install-php-debs.sh 7.4 /path/to/php7.4-focal-debs`.
 
-## Notes
-
-- **Checksums detect corruption, not tampering.** They come from the same
-  release. Anyone who can push to this repository or its releases can change
-  what servers install, so protect the repository (2FA, branch protection,
-  limited collaborators).
-- **Switching away from GetPageSpeed builds:** after a few days without
-  problems, remove their repository and the apt pin file so apt never pulls
-  those packages back in (the installer prints the commands).
-- **Scheduled workflows** in public repositories are disabled by GitHub after
-  60 days without repository activity. Re-enable from the Actions tab, or push
-  a commit occasionally.
-- **Build dependencies** are the likeliest failure: Sury's sources target newer
-  releases than focal. Failed runs upload `build.log` as an artifact.
