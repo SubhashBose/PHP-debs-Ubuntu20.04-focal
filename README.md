@@ -27,19 +27,12 @@ required CVE list.
 
 ## Installing on a server
 
-Online install
+Oneline install
 ```bash
 curl -sL https://raw.githubusercontent.com/SubhashBose/PHP-debs-Ubuntu20.04-focal/main/install-from-release.sh | bash -s -- 7.4
 #OR
 
 curl -sL https://raw.githubusercontent.com/SubhashBose/PHP-debs-Ubuntu20.04-focal/main/install-from-release.sh | bash -s -- 5.6
-```
-
-```bash
-curl -fsSLO https://raw.githubusercontent.com/SubhashBose/PHP-debs-Ubuntu20.04-focal/main/install-from-release.sh
-chmod +x install-from-release.sh
-sudo ./install-from-release.sh 7.4
-sudo ./install-from-release.sh 5.6
 ```
 
 Useful options:
