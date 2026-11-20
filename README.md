@@ -29,9 +29,10 @@ required CVE list.
 
 Oneline install
 ```bash
+# For PHP 7.4
 curl -sL https://raw.githubusercontent.com/SubhashBose/PHP-debs-Ubuntu20.04-focal/main/install-from-release.sh | bash -s -- 7.4
-#OR
 
+# For PHP 5.6
 curl -sL https://raw.githubusercontent.com/SubhashBose/PHP-debs-Ubuntu20.04-focal/main/install-from-release.sh | bash -s -- 5.6
 ```
 
