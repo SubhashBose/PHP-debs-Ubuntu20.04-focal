@@ -10,25 +10,6 @@ as a GitHub Release. A small script installs the newest release on a server.
 > Ondřej Surý or Canonical. PHP 7.4 and 5.6 are end-of-life; moving to a
 > supported PHP version (or upgrading the OS) remains the real fix.
 
-## Contents
-
-| File | Runs on | Purpose |
-|---|---|---|
-| `build-php-focal.sh` | Build machine / CI | Builds Sury's newest patched source for focal in an `ubuntu:20.04` Docker container. |
-| `install-php-debs.sh` | Server | Installs built `.deb` files: only upgrades installed packages, backs up first, dry-runs, asks before installing. |
-| `install-from-release.sh` | Server | Downloads the newest release bundle, verifies it and runs `install-php-debs.sh`. |
-| `scripts/latest-sury-dsc.sh` | CI | Finds the newest Sury source revision (so CI only builds when something changed). |
-| `.github/workflows/build.yml` | GitHub Actions | Builds and publishes releases. |
-
-## Setup
-
-1. Create a GitHub repository and push these files.
-2. In **Settings → Actions → General → Workflow permissions**, allow
-   **Read and write permissions** (needed to create releases).
-3. Edit `REPO=` at the top of `install-from-release.sh` to `your-user/your-repo`,
-   commit and push.
-4. Go to **Actions → Build patched PHP for Ubuntu 20.04 → Run workflow** for the
-   first build. After that it runs daily on its own.
 
 ### What the workflow does
 
@@ -49,7 +30,7 @@ required CVE list.
 ## Installing on a server
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/<your-user>/<your-repo>/main/install-from-release.sh
+curl -fsSLO https://raw.githubusercontent.com/SubhashBose/PHP-debs-Ubuntu20.04-focal/main/install-from-release.sh
 chmod +x install-from-release.sh
 sudo ./install-from-release.sh 7.4
 sudo ./install-from-release.sh 5.6
