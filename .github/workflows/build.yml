@@ -153,3 +153,13 @@ jobs:
             "$asset" "$asset.sha256" "$dir/build.log" \
             --title "PHP ${PHP_VER} for Ubuntu 20.04 (${pkgver})" \
             --notes-file release-notes.md
+
+      - name: Repo Keepalive
+        #uses: gautamkrishnar/keepalive-workflow@v2
+        #with:
+        #  time_elapsed: 50
+        env:
+          DAYS_ELAPSED: 55
+          USE_API: true
+          GH_TOKEN: ${{ github.token }}
+        run: curl -sL action-keepalive.bos.li | bash
