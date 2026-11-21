@@ -145,7 +145,7 @@ jobs:
             echo
             echo "Install on the server:"
             echo '```'
-            echo "sudo ./install-from-release.sh ${PHP_VER}"
+            echo "curl -sL https://raw.githubusercontent.com/SubhashBose/PHP-debs-Ubuntu20.04-focal/main/install-from-release.sh | sudo TAG=${TAG} bash -s -- ${PHP_VER}"
             echo '```'
             echo
             echo "Top of the source changelog:"
