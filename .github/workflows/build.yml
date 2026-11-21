@@ -108,13 +108,23 @@ jobs:
           if-no-files-found: ignore
 
       - name: Publish release
-        if: steps.build.outputs.code == '0'
+        # Explicit checks: a skipped step has no outputs, and GitHub compares a
+        # missing value with '0' as equal, so 'code == 0' alone is not enough.
+        if: >-
+          steps.sel.outputs.run == 'true' &&
+          steps.src.outputs.exists == 'false' &&
+          steps.build.outcome == 'success' &&
+          steps.build.outputs.code == '0'
         env:
           TAG: ${{ steps.src.outputs.tag }}
           SRC_URL: ${{ steps.src.outputs.url }}
         run: |
           dir="php${PHP_VER}-focal-debs"
-          common="$(ls -1 "$dir"/php${PHP_VER}-common_*.deb | head -n1)"
+          common="$(ls -1 "$dir"/php${PHP_VER}-common_*.deb 2>/dev/null | head -n1 || true)"
+          if [ -z "$common" ]; then
+            echo "::error::No php${PHP_VER}-common package found in $dir; refusing to publish."
+            exit 1
+          fi
           pkgver="$(dpkg-deb -f "$common" Version)"
 
           # Ship the installer inside the bundle and cover it with the checksums.
@@ -155,9 +165,6 @@ jobs:
             --notes-file release-notes.md
 
       - name: Repo Keepalive
-        #uses: gautamkrishnar/keepalive-workflow@v2
-        #with:
-        #  time_elapsed: 50
         env:
           DAYS_ELAPSED: 55
           USE_API: true
